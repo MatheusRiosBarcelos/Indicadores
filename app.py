@@ -8,6 +8,7 @@ st.set_page_config(layout="wide")
 st.image('logo.png', width= 150)
 
 # COMERCIAL
+
 df_comercial = pd.read_excel('Indicadores_Comercial.xlsb', engine='pyxlsb')
 df_comercial = df_comercial[df_comercial['Ano'] >= 2023]
 with st.sidebar:
@@ -17,15 +18,18 @@ df_comercial['Data Emissão'] = pd.to_numeric(df_comercial['Data Emissão'], err
 df_comercial['Data Emissão'] = pd.to_datetime(df_comercial['Data Emissão'], origin='1899-12-30', unit='D', errors='coerce')
 
 # RECURSOS HUMANOS
+
 df_rh = pd.read_excel('Indicadores 2024 DTI.xlsx',sheet_name = 'INDICADORES 2024')
 df_rh['ABSENTEÍSMO'] = (df_rh['ABSENTEÍSMO']*100).round(2)
 df_rh['FALTAS INJUSTIFICADAS / HHT'] = (df_rh['FALTAS INJUSTIFICADAS / HHT']*100).round(2)
 
 # MANUTENÇÃO
+
 df_manutencao = pd.read_excel('DADOS_MANUTENÇÃO_2024.xlsx')
 df_manutencao = df_manutencao.groupby(df_manutencao['Data Abertura/Hora'].dt.month).agg(Custo = ('Custo', 'sum')).reset_index()
 
 # NCS INTERNAS
+
 df_qualidade_nc_internas = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'NC - INT. Nº DE PEÇAS')
 df_qualidade_nc_internas = df_qualidade_nc_internas.drop(0)
 new_header = df_qualidade_nc_internas.iloc[0]
@@ -36,6 +40,7 @@ df_qualidade_nc_internas = df_qualidade_nc_internas.drop([12,13,14])
 df_qualidade_nc_internas['MÊS'] = pd.to_datetime(df_qualidade_nc_internas['MÊS'], format='mixed').dt.strftime('%b/%y')
 
 # NCS EXTERNAS
+
 df_qualidade_nc_externas = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'NC - EXT. Nº DE PEÇAS')
 df_qualidade_nc_externas = df_qualidade_nc_externas.drop(0)
 new_header = df_qualidade_nc_externas.iloc[0]
@@ -373,7 +378,7 @@ with tab4:
     df_qualidade_nc_internas['Qtde. NC Disposição_T'] = df_qualidade_nc_internas['Qtde. NC Disposição'].apply(lambda x: f"{x:.1f}%")
 
     fig_ind_nc_int = px.bar(df_qualidade_nc_internas, x='MÊS', y='Qtde. NC Disposição', title='Índice de Não Conformidades Internas', text='Qtde. NC Disposição_T', height=650)
-    fig_ind_nc_int.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
+    fig_ind_nc_int.update_layout(title_x = 0.55,yaxis_title='%', title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(text='Índice de Não Conformidades Internas<br>Meta: Abaixo de 1% - Máximo de 1 Peça NC em 100 Peças Fabricadas',font=dict(size=18)))
     fig_ind_nc_int.add_shape(
             type='line',
             x0=-0.5,
@@ -395,7 +400,7 @@ with tab4:
     df_totais['Porcentagem (%)'] = df_totais['Porcentagem'].apply(lambda x: f"{x:.2f}%")
 
     fig_total_processo = px.bar(df_totais, x='Processo', y='Porcentagem (%)', title="Total Acumulado/Total de NC's Internas", text='Total',height=650)
-    fig_total_processo.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
+    fig_total_processo.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(text= "Total de NC's Internas - Anual por Setor",font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
     fig_total_processo.update_traces(
     textposition='outside',
     textfont=dict(size=18))
@@ -407,7 +412,7 @@ with tab4:
     df_qualidade_nc_externas['Qtde. NC Disposição'] = df_qualidade_nc_externas['Qtde. NC Disposição']*100
     df_qualidade_nc_externas['Qtde. NC Disposição_T'] = df_qualidade_nc_externas['Qtde. NC Disposição'].apply(lambda x: f"{x:.2f}%")
     fig_ind_nc_ext = px.bar(df_qualidade_nc_externas, x='MÊS', y='Qtde. NC Disposição', title='Índice de Não Conformidades Externas', text='Qtde. NC Disposição_T', height=650)
-    fig_ind_nc_ext.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
+    fig_ind_nc_ext.update_layout(title_x = 0.55,yaxis_title='%', title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(text="Índice de Não Conformidades Externas<br>Meta: Abaixo de 0,5% - Máximo de 5 Peças NC em 1000 Peças Fabricadas",font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
     fig_ind_nc_ext.add_shape(
             type='line',
             x0=-0.5,
@@ -431,7 +436,7 @@ with tab4:
     df_totais_empresas['Porcentagem (%)'] = df_totais_empresas['Porcentagem'].apply(lambda x: f"{x:.2f}%")
 
     fig_total_empresa = px.bar(df_totais_empresas, x='Empresa', y='Porcentagem (%)', title="Total Acumulado/ Total de NC's Externas", text='Total', height=650)
-    fig_total_empresa.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
+    fig_total_empresa.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(text="Quantidade de NC's Externa - Anual por Cliente (Em n° de Peças)",font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
     fig_total_empresa.update_traces(
     textposition='outside',
     textfont=dict(size=18)
