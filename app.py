@@ -7,86 +7,121 @@ import numpy as np
 st.set_page_config(layout="wide")   
 st.image('logo.png', width= 150)
 
-# COMERCIAL
-
-df_comercial = pd.read_excel('Indicadores_Comercial.xlsb', engine='pyxlsb')
-df_comercial = df_comercial[df_comercial['Ano'] >= 2023]
+lista_anos = [2023,2024]
 with st.sidebar:
-        target_year = st.selectbox("Ano", df_comercial["Ano"].sort_values().unique(), placeholder='Escolha uma opção', index= 1)
-df_comercial = df_comercial[df_comercial['Ano'] == target_year]
-df_comercial['Data Emissão'] = pd.to_numeric(df_comercial['Data Emissão'], errors='coerce')
-df_comercial['Data Emissão'] = pd.to_datetime(df_comercial['Data Emissão'], origin='1899-12-30', unit='D', errors='coerce')
+    target_year = st.selectbox("Ano", lista_anos, placeholder='Escolha uma opção', index= 1)
+
+# COMERCIAL
+@st.cache_data
+def get_comercial ():
+    df_comercial = pd.read_excel('Indicadores_Comercial.xlsb', engine='pyxlsb')
+    df_comercial = df_comercial[df_comercial['Ano'] >= 2023]
+    df_comercial = df_comercial[df_comercial['Ano'] == target_year]
+    df_comercial['Data Emissão'] = pd.to_numeric(df_comercial['Data Emissão'], errors='coerce')
+    df_comercial['Data Emissão'] = pd.to_datetime(df_comercial['Data Emissão'], origin='1899-12-30', unit='D', errors='coerce')
+
+    return df_comercial
+
+df_comercial = get_comercial()
 
 # RECURSOS HUMANOS
+@st.cache_data
+def get_rh():
+    df_rh = pd.read_excel('Indicadores 2024 DTI.xlsx',sheet_name = 'INDICADORES 2024')
+    df_rh['ABSENTEÍSMO'] = (df_rh['ABSENTEÍSMO']*100).round(2)
+    df_rh['FALTAS INJUSTIFICADAS / HHT'] = (df_rh['FALTAS INJUSTIFICADAS / HHT']*100).round(2)
+    return df_rh
 
-df_rh = pd.read_excel('Indicadores 2024 DTI.xlsx',sheet_name = 'INDICADORES 2024')
-df_rh['ABSENTEÍSMO'] = (df_rh['ABSENTEÍSMO']*100).round(2)
-df_rh['FALTAS INJUSTIFICADAS / HHT'] = (df_rh['FALTAS INJUSTIFICADAS / HHT']*100).round(2)
+df_rh = get_rh()
 
 # MANUTENÇÃO
+@st.cache_data
+def get_manutencao():
+    df_manutencao = pd.read_excel('DADOS_MANUTENÇÃO_2024.xlsx')
+    df_manutencao = df_manutencao.groupby(df_manutencao['Data Abertura/Hora'].dt.month).agg(Custo = ('Custo', 'sum')).reset_index()
+    return df_manutencao
 
-df_manutencao = pd.read_excel('DADOS_MANUTENÇÃO_2024.xlsx')
-df_manutencao = df_manutencao.groupby(df_manutencao['Data Abertura/Hora'].dt.month).agg(Custo = ('Custo', 'sum')).reset_index()
+df_manutencao = get_manutencao()
 
 # NCS INTERNAS
+@st.cache_data
+def get_qualidade_nc_internas():
+    df_qualidade_nc_internas = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'NC - INT. Nº DE PEÇAS')
+    df_qualidade_nc_internas = df_qualidade_nc_internas.drop(0)
+    new_header = df_qualidade_nc_internas.iloc[0]
+    df_qualidade_nc_internas = df_qualidade_nc_internas[1:]
+    df_qualidade_nc_internas.columns = new_header
+    df_qualidade_nc_internas = df_qualidade_nc_internas.reset_index(drop=True)
+    df_qualidade_nc_internas = df_qualidade_nc_internas.drop([12,13,14])
+    df_qualidade_nc_internas['MÊS'] = pd.to_datetime(df_qualidade_nc_internas['MÊS'], format='mixed').dt.strftime('%b/%y')
+    return df_qualidade_nc_internas
 
-df_qualidade_nc_internas = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'NC - INT. Nº DE PEÇAS')
-df_qualidade_nc_internas = df_qualidade_nc_internas.drop(0)
-new_header = df_qualidade_nc_internas.iloc[0]
-df_qualidade_nc_internas = df_qualidade_nc_internas[1:]
-df_qualidade_nc_internas.columns = new_header
-df_qualidade_nc_internas = df_qualidade_nc_internas.reset_index(drop=True)
-df_qualidade_nc_internas = df_qualidade_nc_internas.drop([12,13,14])
-df_qualidade_nc_internas['MÊS'] = pd.to_datetime(df_qualidade_nc_internas['MÊS'], format='mixed').dt.strftime('%b/%y')
+df_qualidade_nc_internas = get_qualidade_nc_internas()
 
 # NCS EXTERNAS
+@st.cache_data
+def get_qualidade_nc_externas():
+    df_qualidade_nc_externas = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'NC - EXT. Nº DE PEÇAS')
+    df_qualidade_nc_externas = df_qualidade_nc_externas.drop(0)
+    new_header = df_qualidade_nc_externas.iloc[0]
+    df_qualidade_nc_externas = df_qualidade_nc_externas[1:]
+    df_qualidade_nc_externas.columns = new_header
+    df_qualidade_nc_externas = df_qualidade_nc_externas.reset_index(drop=True)
+    df_qualidade_nc_externas = df_qualidade_nc_externas.drop([12,13,14])
+    df_qualidade_nc_externas['MÊS'] = pd.to_datetime(df_qualidade_nc_externas['MÊS'], format='mixed').dt.strftime('%b/%y')
+    return df_qualidade_nc_externas
 
-df_qualidade_nc_externas = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'NC - EXT. Nº DE PEÇAS')
-df_qualidade_nc_externas = df_qualidade_nc_externas.drop(0)
-new_header = df_qualidade_nc_externas.iloc[0]
-df_qualidade_nc_externas = df_qualidade_nc_externas[1:]
-df_qualidade_nc_externas.columns = new_header
-df_qualidade_nc_externas = df_qualidade_nc_externas.reset_index(drop=True)
-df_qualidade_nc_externas = df_qualidade_nc_externas.drop([12,13,14])
-df_qualidade_nc_externas['MÊS'] = pd.to_datetime(df_qualidade_nc_externas['MÊS'], format='mixed').dt.strftime('%b/%y')
+df_qualidade_nc_externas = get_qualidade_nc_externas()
 
 # CUSTO PEÇAS REFUGADAS
+@st.cache_data
+def get_refugo():
+    df_refugo = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'Refugo Produto x R$')
+    df_refugo.drop([0], inplace=True)
+    new_header = df_refugo.iloc[0]
+    df_refugo = df_refugo[1:]
+    df_refugo.columns = new_header
+    df_refugo.drop([14], inplace=True)
+    df_refugo['Mês / Ano'] = pd.to_datetime(df_refugo['Mês / Ano'], format='mixed').dt.strftime('%b/%y')
+    df_refugo.reset_index(drop=True, inplace=True)
+    return df_refugo
 
-df_refugo = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'Refugo Produto x R$')
-df_refugo.drop([0], inplace=True)
-new_header = df_refugo.iloc[0]
-df_refugo = df_refugo[1:]
-df_refugo.columns = new_header
-df_refugo.drop([14], inplace=True)
-df_refugo['Mês / Ano'] = pd.to_datetime(df_refugo['Mês / Ano'], format='mixed').dt.strftime('%b/%y')
-df_refugo.reset_index(drop=True, inplace=True)
+df_refugo = get_refugo()
 
 # CUSTO PEÇAS RETRABALHADAS
+@st.cache_data
+def get_retrabalho():
+    df_retrabalho = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'Retrabalho Produto x R$')
+    df_retrabalho.drop([0], inplace=True)
+    new_header = df_retrabalho.iloc[0]
+    df_retrabalho = df_retrabalho[1:]
+    df_retrabalho.columns = new_header
+    df_retrabalho.drop([14], inplace=True)
+    df_retrabalho['Mês / Ano'] = pd.to_datetime(df_retrabalho['Mês / Ano'], format='mixed').dt.strftime('%b/%y')
+    df_retrabalho.reset_index(drop=True, inplace=True)
+    df_retrabalho.dropna(subset=['Valor (R$)'], inplace=True)
+    return df_retrabalho
 
-df_retrabalho = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'Retrabalho Produto x R$')
-df_retrabalho.drop([0], inplace=True)
-new_header = df_retrabalho.iloc[0]
-df_retrabalho = df_retrabalho[1:]
-df_retrabalho.columns = new_header
-df_retrabalho.drop([14], inplace=True)
-df_retrabalho['Mês / Ano'] = pd.to_datetime(df_retrabalho['Mês / Ano'], format='mixed').dt.strftime('%b/%y')
-df_retrabalho.reset_index(drop=True, inplace=True)
-df_retrabalho.dropna(subset=['Valor (R$)'], inplace=True)
+df_retrabalho = get_retrabalho()
 
 # COMPARAÇÃO NÃO CONFORMIDADE EXTERNA E INTERNA
+@st.cache_data
+def get_comp():
+    df_comp = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'Custo NC ')
+    new_header = df_comp.iloc[0]
+    df_comp = df_comp[1:]
+    df_comp.columns = new_header
+    df_comp.drop([13], inplace=True)
+    df_comp['Mês / Ano'] = pd.to_datetime(df_comp['Mês / Ano'], format='mixed').dt.strftime('%b/%y')
+    nova_linha_3 = {'Mês / Ano': 'Total', 'CUSTO DE NC EXTERNA ': df_comp['CUSTO DE NC EXTERNA '].sum(),'CUSTO DE NC INTERNA ': df_comp['CUSTO DE NC INTERNA '].sum()}
+    df_comp = pd.concat([df_comp, pd.DataFrame([nova_linha_3])], ignore_index=True)
+    df_comp = df_comp.reset_index(drop=True)
+    df_comp_melt = pd.melt(df_comp,id_vars=['Mês / Ano'], value_vars=['CUSTO DE NC EXTERNA ', 'CUSTO DE NC INTERNA '], var_name='CUSTO',value_name='Custo (R$)')
+    df_comp_melt.dropna(subset = 'Custo (R$)', inplace = True)
+    df_comp_melt['Text'] = df_comp_melt['Custo (R$)'].apply(lambda x: f'R${x:.2f}')
+    return df_comp_melt
 
-df_comp = pd.read_excel('Indicadores da Qualidade 2024 - QUALIDADE FQ 6.2-001-01 - ELOHIM.xlsx',sheet_name = 'Custo NC ')
-new_header = df_comp.iloc[0]
-df_comp = df_comp[1:]
-df_comp.columns = new_header
-df_comp.drop([13], inplace=True)
-df_comp['Mês / Ano'] = pd.to_datetime(df_comp['Mês / Ano'], format='mixed').dt.strftime('%b/%y')
-nova_linha_3 = {'Mês / Ano': 'Total', 'CUSTO DE NC EXTERNA ': df_comp['CUSTO DE NC EXTERNA '].sum(),'CUSTO DE NC INTERNA ': df_comp['CUSTO DE NC INTERNA '].sum()}
-df_comp = pd.concat([df_comp, pd.DataFrame([nova_linha_3])], ignore_index=True)
-df_comp = df_comp.reset_index(drop=True)
-df_comp_melt = pd.melt(df_comp,id_vars=['Mês / Ano'], value_vars=['CUSTO DE NC EXTERNA ', 'CUSTO DE NC INTERNA '], var_name='CUSTO',value_name='Custo (R$)')
-df_comp_melt.dropna(subset = 'Custo (R$)', inplace = True)
-df_comp_melt['Text'] = df_comp_melt['Custo (R$)'].apply(lambda x: f'R${x:.2f}')
+df_comp_melt = get_comp()
 
 tab1,tab2,tab3,tab4 = st.tabs(['Indicador Comercial', 'Indicador Custo', 'Indicador Recursos Humanos', 'Indicador Qualidade'])
 
