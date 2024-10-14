@@ -25,14 +25,14 @@ def get_comercial ():
 df_comercial = get_comercial()
 
 # RECURSOS HUMANOS
-@st.cache_data
-def get_rh():
-    df_rh = pd.read_excel('Indicadores 2024 DTI.xlsx',sheet_name = 'INDICADORES 2024')
-    df_rh['ABSENTEÍSMO'] = (df_rh['ABSENTEÍSMO']*100).round(2)
-    df_rh['FALTAS INJUSTIFICADAS / HHT'] = (df_rh['FALTAS INJUSTIFICADAS / HHT']*100).round(2)
-    return df_rh
+# @st.cache_data
+# def get_rh():
+#     df_rh = pd.read_excel('Indicadores 2024 DTI.xlsx',sheet_name = 'INDICADORES 2024')
+#     df_rh['ABSENTEÍSMO'] = (df_rh['ABSENTEÍSMO']*100).round(2)
+#     df_rh['FALTAS INJUSTIFICADAS / HHT'] = (df_rh['FALTAS INJUSTIFICADAS / HHT']*100).round(2)
+#     return df_rh
 
-df_rh = get_rh()
+# df_rh = get_rh()
 
 # MANUTENÇÃO
 @st.cache_data
@@ -350,91 +350,98 @@ with tab2:
     st.plotly_chart(fig_comp)
 
 with tab3:
-    df_rh['ABSENTEISMO_TEXT'] = df_rh['ABSENTEÍSMO'].apply(lambda x: f"{x:.2f}%")
-    fig_just = px.bar(df_rh,x='MÊS',y='ABSENTEÍSMO', title='FALTAS JUSTIFICADAS/HHT',text='ABSENTEISMO_TEXT')
-    fig_just.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
-    fig_just.add_annotation(
-        text="META: ABAIXO DE 2,0%",
-        xref="paper", yref="paper",
-        x=0.5, y=1.15, showarrow=False,
-        font=dict(size=14)
-    )
-    fig_just.add_shape(
-        type='line',
-        x0=-0.5,
-        y0=2,
-        x1=12,
-        y1=2,
-        line=dict(color='Red', width=2)
-    )
-    fig_just.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
+    # df_rh['ABSENTEISMO_TEXT'] = df_rh['ABSENTEÍSMO'].apply(lambda x: f"{x:.2f}%")
+    # fig_just = px.bar(df_rh,x='MÊS',y='ABSENTEÍSMO', title='FALTAS JUSTIFICADAS/HHT',text='ABSENTEISMO_TEXT')
+    # fig_just.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+    # fig_just.add_annotation(
+    #     text="META: ABAIXO DE 2,0%",
+    #     xref="paper", yref="paper",
+    #     x=0.5, y=1.15, showarrow=False,
+    #     font=dict(size=14)
+    # )
+    # fig_just.add_shape(
+    #     type='line',
+    #     x0=-0.5,
+    #     y0=2,
+    #     x1=12,
+    #     y1=2,
+    #     line=dict(color='Red', width=2)
+    # )
+    # fig_just.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
 
-    df_rh['FALTAS INJUSTIFICADAS_TEXT'] = df_rh['FALTAS INJUSTIFICADAS / HHT'].apply(lambda x: f"{x:.2f}%")
-    fig_injust = px.bar(df_rh,x='MÊS',y='FALTAS INJUSTIFICADAS / HHT', title='FALTAS INJUSTIFICADAS/HHT',text = 'FALTAS INJUSTIFICADAS_TEXT')
-    fig_injust.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
-    fig_injust.add_annotation(
-        text="META: ABAIXO DE 1,5%",
-        xref="paper", yref="paper",
-        x=0.5, y=1.15, showarrow=False,
-        font=dict(size=14)
-    )
-    fig_injust.add_shape(
-        type='line',
-        x0=-0.5,
-        y0=1.5,
-        x1=12,
-        y1=1.5,
-        line=dict(color='Red', width=2)
-    )
-    fig_injust.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
+    # df_rh['FALTAS INJUSTIFICADAS_TEXT'] = df_rh['FALTAS INJUSTIFICADAS / HHT'].apply(lambda x: f"{x:.2f}%")
+    # fig_injust = px.bar(df_rh,x='MÊS',y='FALTAS INJUSTIFICADAS / HHT', title='FALTAS INJUSTIFICADAS/HHT',text = 'FALTAS INJUSTIFICADAS_TEXT')
+    # fig_injust.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+    # fig_injust.add_annotation(
+    #     text="META: ABAIXO DE 1,5%",
+    #     xref="paper", yref="paper",
+    #     x=0.5, y=1.15, showarrow=False,
+    #     font=dict(size=14)
+    # )
+    # fig_injust.add_shape(
+    #     type='line',
+    #     x0=-0.5,
+    #     y0=1.5,
+    #     x1=12,
+    #     y1=1.5,
+    #     line=dict(color='Red', width=2)
+    # )
+    # fig_injust.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
 
-    df_rh['HORAS DE TREINAMENTO / HHT'] = df_rh['HORAS DE TREINAMENTO / HHT']*100
-    df_rh['TREINAMENTOS_TEXT'] = df_rh['HORAS DE TREINAMENTO / HHT'].apply(lambda x: f"{x:.2f}%")
-    fig_treina = px.bar(df_rh,x='MÊS',y='HORAS DE TREINAMENTO / HHT', title='TREINAMENTOS/HHT',text = 'TREINAMENTOS_TEXT')
-    fig_treina.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
-    fig_treina.add_annotation(
-        text="META: ABAIXO DE 1,5%",
-        xref="paper", yref="paper",
-        x=0.5, y=1.15, showarrow=False,
-        font=dict(size=14)
-    )
-    fig_treina.add_shape(
-        type='line',
-        x0=-0.5,
-        y0=1.5,
-        x1=12,
-        y1=1.5,
-        line=dict(color='Red', width=2)
-    )
-    fig_treina.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
+    # df_rh['HORAS DE TREINAMENTO / HHT'] = df_rh['HORAS DE TREINAMENTO / HHT']*100
+    # df_rh['TREINAMENTOS_TEXT'] = df_rh['HORAS DE TREINAMENTO / HHT'].apply(lambda x: f"{x:.2f}%")
+    # fig_treina = px.bar(df_rh,x='MÊS',y='HORAS DE TREINAMENTO / HHT', title='TREINAMENTOS/HHT',text = 'TREINAMENTOS_TEXT')
+    # fig_treina.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+    # fig_treina.add_annotation(
+    #     text="META: ABAIXO DE 1,5%",
+    #     xref="paper", yref="paper",
+    #     x=0.5, y=1.15, showarrow=False,
+    #     font=dict(size=14)
+    # )
+    # fig_treina.add_shape(
+    #     type='line',
+    #     x0=-0.5,
+    #     y0=1.5,
+    #     x1=12,
+    #     y1=1.5,
+    #     line=dict(color='Red', width=2)
+    # )
+    # fig_treina.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
 
-    df_rh['HORAS EXTRAS / HHT'] = df_rh['HORAS EXTRAS / HHT']*100
-    df_rh['HORAS_EXTRAS_TEXT'] = df_rh['HORAS EXTRAS / HHT'].apply(lambda x: f"{x:.2f}%")
-    fig_hora_ext = px.bar(df_rh,x='MÊS',y='HORAS EXTRAS / HHT', title='HORAS EXTRAS/HHT',text = 'HORAS_EXTRAS_TEXT')
-    fig_hora_ext.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
-    fig_hora_ext.add_annotation(
-        text="META: ABAIXO DE 10%",
-        xref="paper", yref="paper",
-        x=0.5, y=1.15, showarrow=False,
-        font=dict(size=14)
-    )
-    fig_hora_ext.add_shape(
-        type='line',
-        x0=-0.5,
-        y0=10,
-        x1=12   ,
-        y1=10,
-        line=dict(color='Red', width=2)
-    )
-    fig_hora_ext.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
+    # df_rh['HORAS EXTRAS / HHT'] = df_rh['HORAS EXTRAS / HHT']*100
+    # df_rh['HORAS_EXTRAS_TEXT'] = df_rh['HORAS EXTRAS / HHT'].apply(lambda x: f"{x:.2f}%")
+    # fig_hora_ext = px.bar(df_rh,x='MÊS',y='HORAS EXTRAS / HHT', title='HORAS EXTRAS/HHT',text = 'HORAS_EXTRAS_TEXT')
+    # fig_hora_ext.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+    # fig_hora_ext.add_annotation(
+    #     text="META: ABAIXO DE 10%",
+    #     xref="paper", yref="paper",
+    #     x=0.5, y=1.15, showarrow=False,
+    #     font=dict(size=14)
+    # )
+    # fig_hora_ext.add_shape(
+    #     type='line',
+    #     x0=-0.5,
+    #     y0=10,
+    #     x1=12   ,
+    #     y1=10,
+    #     line=dict(color='Red', width=2)
+    # )
+    # fig_hora_ext.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
 
-    col5,col6 = st.columns(2)
-    col7,col8 = st.columns(2)
+    # col5,col6 = st.columns(2)
+    # col7,col8 = st.columns(2)
 
-    col5.plotly_chart(fig_just)
-    col6.plotly_chart(fig_injust)
-    col7.plotly_chart(fig_treina)
-    col8.plotly_chart(fig_hora_ext)
+    # col5.plotly_chart(fig_just)
+    # col6.plotly_chart(fig_injust)
+    # col7.plotly_chart(fig_treina)
+    # col8.plotly_chart(fig_hora_ext)
+
+    st.image('Faltas_justificadas.PNG',use_column_width=True)
+    st.image('Faltas_injustificadas.PNG',use_column_width=True)
+    st.image('Horas_extras.PNG',use_column_width=True)
+    st.image('Treinamentos.PNG',use_column_width=True)
+
+
 
 with tab4:
     df_qualidade_nc_internas = df_qualidade_nc_internas.dropna(subset='Qtde. NC Disposição')
@@ -542,5 +549,5 @@ with tab5:
     
     col10.plotly_chart(fig5)
     
-    st.image('Indicador_Saving em Compras - SET 2024.PNG',width = 1000)
-    st.image('Indicador_Serviços Terceirizados - SET 2024.PNG',width = 1000)
+    st.image('Indicador_Saving em Compras - SET 2024.PNG',use_column_width=True)
+    st.image('Indicador_Serviços Terceirizados - SET 2024.PNG',use_column_width=True)
