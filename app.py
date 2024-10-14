@@ -123,7 +123,36 @@ def get_comp():
 
 df_comp_melt = get_comp()
 
-tab1,tab2,tab3,tab4 = st.tabs(['Indicador Comercial', 'Indicador Custo', 'Indicador Recursos Humanos', 'Indicador Qualidade'])
+# ENTREGA DO PROVEDOR EXTERNO NO PRAZO
+
+def get_entregas_ext():
+    df_entregas_ext = pd.read_excel('FQ 9.1-001-01 Indicadores da Qualidade 2023.xlsx', sheet_name = 'PAQ - Prazo e Devolução')
+    new_header = df_entregas_ext.iloc[21]
+    df_entregas_ext = df_entregas_ext[22:35]
+    df_entregas_ext.columns = new_header
+    df_entregas_ext = df_entregas_ext.reset_index(drop=True)
+    df_entregas_ext['% Prazo e Antecipado'] = (df_entregas_ext['% Prazo e Antecipado'].fillna(0) * 100).round(0)
+    df_entregas_ext['% Atrasado'] = (df_entregas_ext['% Atrasado'].fillna(0) * 100).round(0)
+
+    return df_entregas_ext
+
+df_entregas_ext = get_entregas_ext()
+
+# DEVOLUÇÕES AO PROVEDOR EXTERNO
+def get_devolucoes_ext():
+    df_devolucoes_ext = pd.read_excel('FQ 9.1-001-01 Indicadores da Qualidade 2023.xlsx', sheet_name = 'PAQ - Prazo e Devolução')
+    new_header = df_devolucoes_ext.iloc[37]
+    df_devolucoes_ext = df_devolucoes_ext[38:52]
+    df_devolucoes_ext.columns = new_header
+    df_devolucoes_ext = df_devolucoes_ext.reset_index(drop=True)
+    df_devolucoes_ext['% Sem Devoluções'] = (df_devolucoes_ext['% Sem Devoluções'].fillna(0) * 100).round(0)
+    df_devolucoes_ext['% Devoluções'] = (df_devolucoes_ext['% Devoluções'].fillna(0) * 100).round(0)
+
+    return df_devolucoes_ext
+
+df_devolucoes_externas = get_devolucoes_ext()
+
+tab1,tab2,tab3,tab4,tab5 = st.tabs(['Indicador Comercial', 'Indicador Custo', 'Indicador Recursos Humanos', 'Indicador Qualidade', 'Indicadores PAQ'])
 
 with tab1:
     df_summary_comercial = df_comercial.groupby('Mês').agg(
@@ -477,3 +506,41 @@ with tab4:
     textfont=dict(size=18)
 )
     st.plotly_chart(fig_total_empresa)
+
+with tab5:
+    df_entregas_ext['Percentual (%)'] = df_entregas_ext['% Prazo e Antecipado'].apply(lambda x: f"{x:.0f}%")
+
+    fig4 = px.bar(df_entregas_ext, x = 'Mês', y = '% Prazo e Antecipado', title= 'Índice de Entrega do Provedor Externo no Prazo<br>Meta: 90% das Aquisições no Prazo e/ou Antecipado -  Acima da linha',text='Percentual (%)',height=500)
+    fig4.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+    fig4.add_shape( 
+    type='line',
+    x0=-0.5,
+    y0=35,
+    x1=len(df_entregas_ext['Mês'])-0.5,
+    y1=35,  
+    line=dict(color='Red', width=2)
+)
+    fig4.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
+
+    col9,col10 = st.columns(2)
+
+    col9.plotly_chart(fig4)
+
+    df_devolucoes_externas['Percentual (%)'] = df_devolucoes_externas['% Sem Devoluções'].apply(lambda x: f"{x:.0f}%")
+
+    fig5 = px.bar(df_devolucoes_externas, x = 'Mês', y = '% Sem Devoluções', title= 'Índice de Devolução ao Provedor Externo<br>Meta: 100% das Aquisições sem Devolução - Acima da linha',text='Percentual (%)',height=500)
+    fig5.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+    fig5.add_shape( 
+    type='line',
+    x0=-0.5,
+    y0=35,
+    x1=len(df_devolucoes_externas['Mês'])-1.5,
+    y1=35,  
+    line=dict(color='Red', width=2)
+)
+    fig5.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
+    
+    col10.plotly_chart(fig5)
+    
+    st.image('Indicador_Saving em Compras - SET 2024.PNG',width = 1000)
+    st.image('Indicador_Serviços Terceirizados - SET 2024.PNG',width = 1000)
