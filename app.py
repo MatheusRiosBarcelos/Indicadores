@@ -441,8 +441,6 @@ with tab3:
     st.image('Horas_extras.PNG',use_column_width=True)
     st.image('Treinamentos.PNG',use_column_width=True)
 
-
-
 with tab4:
     df_qualidade_nc_internas = df_qualidade_nc_internas.dropna(subset='Qtde. NC Disposição')
     df_qualidade_nc_internas['Qtde. NC Disposição'] = df_qualidade_nc_internas['Qtde. NC Disposição'] * 100
