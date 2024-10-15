@@ -547,5 +547,5 @@ with tab5:
     
     col10.plotly_chart(fig5)
     
-    st.image('Indicador_Saving em Compras - SET 2024.png',use_column_width=True)
-    st.image('Indicador_Serviços Terceirizados - SET 2024.png',use_column_width=True)
+    st.image('Indicador_Saving em Compras - SET 2024.PNG',use_column_width=True)
+    st.image('Indicador_Serviços Terceirizados - SET 2024.PNG',use_column_width=True)
