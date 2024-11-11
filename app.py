@@ -436,10 +436,10 @@ with tab3:
     # col7.plotly_chart(fig_treina)
     # col8.plotly_chart(fig_hora_ext)
 
-    st.image('Faltas_justificadas.png',use_column_width=True)
-    st.image('Faltas_injustificadas.png',use_column_width=True)
-    st.image('Horas_extras.png',use_column_width=True)
-    st.image('Treinamentos.png',use_column_width=True)
+    st.image('Faltas_justificadas.PNG',use_column_width=True)
+    st.image('Faltas_injustificadas.PNG',use_column_width=True)
+    st.image('Horas_extras.PNG',use_column_width=True)
+    st.image('Treinamentos.PNG',use_column_width=True)
 
 with tab4:
     df_qualidade_nc_internas = df_qualidade_nc_internas.dropna(subset='Qtde. NC Disposição')
@@ -500,7 +500,11 @@ with tab4:
     df_totais_empresas.columns = ['Empresa', 'Total']
     df_totais_empresas= df_totais_empresas.drop([12,13,14,15])
     df_totais_empresas_drop_1= df_totais_empresas.drop([11])
-    total_nc_externas = df_totais_empresas_drop_1['Total'].sum()
+
+    df_totais_empresas_drop_1['Total'] = pd.to_numeric(df_totais_empresas_drop_1['Total'], errors='coerce').fillna(0)
+    df_totais_empresas['Total'] = pd.to_numeric(df_totais_empresas['Total'], errors='coerce').fillna(0)
+
+    total_nc_externas = df_totais_empresas_drop_1['Total'].fillna(0).sum()
     df_totais_empresas['Porcentagem'] = (df_totais_empresas['Total']/total_nc_externas)*100
     df_totais_empresas['Porcentagem (%)'] = df_totais_empresas['Porcentagem'].apply(lambda x: f"{x:.2f}%")
 
