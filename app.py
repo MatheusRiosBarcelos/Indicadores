@@ -170,7 +170,7 @@ with tab1:
     df_summary_comercial = df_summary_comercial.sort_values('Mês').reset_index(drop=True)
     df_summary_comercial['Percentual (%)'] = df_summary_comercial['Percentual (%)'].apply(lambda x: f"{x:.0f}%")
 
-    fig = px.bar(df_summary_comercial, x = 'Mês', y = 'Percentual (%)', title= 'Indicador Comercial (Pedidos/Orçamentos)',text='Percentual (%)',height=500)
+    fig = px.bar(df_summary_comercial, x = 'Mês', y = 'Percentual (%)', title= 'Indicador Comercial (Pedidos/Orçamentos)<br>Meta: Acima de 35%',text='Percentual (%)',height=500)
     fig.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
     fig.add_shape(
     type='line',
@@ -203,7 +203,7 @@ with tab1:
     )
 
     fig2.update_layout(
-        title='Balanço de Orçamentos Aprovados por Mês',
+        title='Comparação Total<br>Orçamentos Aprovados x Orçamentos Cancelados',
         xaxis_title='Mês',
         yaxis_title='Quantidade',
         barmode='stack' ,
@@ -219,7 +219,7 @@ with tab1:
 
     df_summary_comercial_no_ACM = df_summary_comercial.drop(df_summary_comercial[df_summary_comercial.Mês == 'ACM'].index)
 
-    fig3 = px.bar(df_summary_comercial_no_ACM, x = 'Mês', y = 'pedidos_totais', title= 'Orçamentos Totais por Mês',text_auto='.2s',height=500)
+    fig3 = px.bar(df_summary_comercial_no_ACM, x = 'Mês', y = 'pedidos_totais', title= 'Quantidade Total de Orçamentos',text_auto='.2s',height=500)
     fig3.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
 
     st.plotly_chart(fig)
@@ -297,7 +297,7 @@ with tab2:
     df_refugo = df_refugo.dropna(subset=['Valor (R$)']).reset_index(drop=True)
     df_refugo_filtered = df_refugo.iloc[:-1]
 
-    fig_refugo = px.bar(df_refugo, x='Mês / Ano', y='Valor (R$)', title='Custo de Peças Refugadas', text='Text',height=650)
+    fig_refugo = px.bar(df_refugo, x='Mês / Ano', y='Valor (R$)', title='Custo de Peças Refugadas<br>Meta: Abaixo do Permissível (0,25% do faturamento Bruto Mensal)', text='Text',height=650)
     fig_refugo.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
     fig_refugo.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
     fig_refugo.add_trace(go.Scatter(x=df_refugo_filtered['Mês / Ano'], y= df_refugo_filtered['Permissível (R$)'],
@@ -321,7 +321,7 @@ with tab2:
     df_retrabalho['Text'] = df_retrabalho['Valor (R$)'].apply(lambda x: f'R${x:.2f}')
     df_retrabalho_filtered = df_retrabalho.iloc[:-1]
 
-    fig_retrabalho = px.bar(df_retrabalho, x='Mês / Ano', y='Valor (R$)', title='Custo de Peças Retrabalhadas', text='Text',height=650)
+    fig_retrabalho = px.bar(df_retrabalho, x='Mês / Ano', y='Valor (R$)', title='Custo de Peças Retrabalhadas<br>Meta: Abaixo do Permissível (0,5% do Faturamento Bruto Mensal)', text='Text',height=650)
     fig_retrabalho.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
     fig_retrabalho.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
     fig_retrabalho.add_trace(go.Scatter(x=df_retrabalho_filtered['Mês / Ano'], y= df_retrabalho_filtered['Permissível (R$)'],
@@ -337,7 +337,7 @@ with tab2:
         xanchor="center",
         x=0.5,font = dict(size=16)))
     
-    fig_comp = px.bar(df_comp_melt, x="Mês / Ano", y="Custo (R$)", color='CUSTO', barmode='group',title = 'Comparação Custo de Não Conformidade', text='Text')
+    fig_comp = px.bar(df_comp_melt, x="Mês / Ano", y="Custo (R$)", color='CUSTO', barmode='group',title = 'Comparação Custo de Não Conformidade<br>Comparação de Externa x Interna', text='Text')
     fig_comp.update_layout(yaxis_title='Custo (R$)',title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=18)),yaxis=dict(tickfont=dict(size=18)),title = dict(font=dict(size=18)),legend=dict(orientation="h",
         yanchor="top",
         y=-0.2, 
@@ -436,10 +436,10 @@ with tab3:
     # col7.plotly_chart(fig_treina)
     # col8.plotly_chart(fig_hora_ext)
 
-    st.image('Faltas_justificadas.png',use_column_width=True)
-    st.image('Faltas_injustificadas.png',use_column_width=True)
-    st.image('Horas_extras.png',use_column_width=True)
-    st.image('Treinamentos.png',use_column_width=True)
+    st.image('Faltas_justificadas.PNG',use_column_width=True)
+    st.image('Faltas_injustificadas.PNG',use_column_width=True)
+    st.image('Horas_extras.PNG',use_column_width=True)
+    st.image('Treinamentos.PNG',use_column_width=True)
 
 with tab4:
     df_qualidade_nc_internas = df_qualidade_nc_internas.dropna(subset='Qtde. NC Disposição')
