@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 st.set_page_config(layout="wide")   
-st.image('logo.png', width= 150)
+st.image('logo.png', width= 150)    
 
 lista_anos = [2023,2024]
 with st.sidebar:
@@ -337,13 +337,13 @@ with tab2:
         xanchor="center",
         x=0.5,font = dict(size=16)))
     
-    fig_comp = px.bar(df_comp_melt, x="Mês / Ano", y="Custo (R$)", color='CUSTO', barmode='group',title = 'Comparação Custo de Não Conformidade<br>Comparação de Externa x Interna', text='Text')
+    fig_comp = px.bar(df_comp_melt, x="Mês / Ano", y="Custo (R$)", color='CUSTO', barmode='group',title = 'Comparação Custo de Não Conformidade<br>Comparação de Externa x Interna', text='Text', height=800)
     fig_comp.update_layout(yaxis_title='Custo (R$)',title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=18)),yaxis=dict(tickfont=dict(size=18)),title = dict(font=dict(size=18)),legend=dict(orientation="h",
         yanchor="top",
         y=-0.2, 
         xanchor="center",
-        x=0.5,font = dict(size=14)))
-    fig_comp.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
+        x=0.5,font = dict(size=16)))
+    fig_comp.update_traces(textfont=dict(size=18), textangle=0, textposition="outside")
 
     st.plotly_chart(fig_refugo)
     st.plotly_chart(fig_retrabalho)
