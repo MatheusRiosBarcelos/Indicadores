@@ -349,7 +349,7 @@ with tab2:
     st.plotly_chart(fig_retrabalho)
     st.plotly_chart(fig_comp)
 
-with tab3:
+# with tab3:
     # df_rh['ABSENTEISMO_TEXT'] = df_rh['ABSENTEÍSMO'].apply(lambda x: f"{x:.2f}%")
     # fig_just = px.bar(df_rh,x='MÊS',y='ABSENTEÍSMO', title='FALTAS JUSTIFICADAS/HHT',text='ABSENTEISMO_TEXT')
     # fig_just.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
@@ -436,14 +436,16 @@ with tab3:
     # col7.plotly_chart(fig_treina)
     # col8.plotly_chart(fig_hora_ext)
 
-    st.image('Faltas_justificadas.png',use_container_width =True)
-    st.image('Faltas_injustificadas.png',use_container_width =True)
-    st.image('Horas_extras.png',use_container_width =True)
-    st.image('Treinamentos.png',use_container_width =True)
+    # st.image('Faltas_justificadas.png',use_container_width =True)
+    # st.image('Faltas_injustificadas.png',use_container_width =True)
+    # st.image('Horas_extras.png',use_container_width =True)
+    # st.image('Treinamentos.png',use_container_width =True)
 
 with tab4:
     df_qualidade_nc_internas = df_qualidade_nc_internas.dropna(subset='Qtde. NC Disposição')
     df_qualidade_nc_internas['Qtde. NC Disposição'] = df_qualidade_nc_internas['Qtde. NC Disposição'] * 100
+    nova_linha_4 = {'MÊS':'ANO', 'Qtde. peças Produzidas':df_qualidade_nc_internas['Qtde. peças Produzidas'].sum(),'Qtde. NC Disposição':((df_qualidade_nc_internas['TOTAL / MÊS'].sum()/df_qualidade_nc_internas['Qtde. peças Produzidas'].sum())*100)}
+    df_qualidade_nc_internas = pd.concat([df_qualidade_nc_internas, pd.DataFrame([nova_linha_4])], ignore_index=True)
     df_qualidade_nc_internas['Qtde. NC Disposição_T'] = df_qualidade_nc_internas['Qtde. NC Disposição'].apply(lambda x: f"{x:.1f}%")
 
     fig_ind_nc_int = px.bar(df_qualidade_nc_internas, x='MÊS', y='Qtde. NC Disposição', title='Índice de Não Conformidades Internas', text='Qtde. NC Disposição_T', height=650)
@@ -479,7 +481,11 @@ with tab4:
     df_qualidade_nc_externas = df_qualidade_nc_externas.dropna(subset='Qtde. NC Disposição')
 
     df_qualidade_nc_externas['Qtde. NC Disposição'] = df_qualidade_nc_externas['Qtde. NC Disposição']*100
+
+    nova_linha_5 = {'MÊS':'ANO','Qtde. NC Disposição':((df_qualidade_nc_externas['TOTAL'].sum()/df_qualidade_nc_externas['Qtde. peças Produzidas'].sum())*100)}
+    df_qualidade_nc_externas = pd.concat([df_qualidade_nc_externas, pd.DataFrame([nova_linha_5])], ignore_index=True)
     df_qualidade_nc_externas['Qtde. NC Disposição_T'] = df_qualidade_nc_externas['Qtde. NC Disposição'].apply(lambda x: f"{x:.2f}%")
+
     fig_ind_nc_ext = px.bar(df_qualidade_nc_externas, x='MÊS', y='Qtde. NC Disposição', title='Índice de Não Conformidades Externas', text='Qtde. NC Disposição_T', height=650)
     fig_ind_nc_ext.update_layout(title_x = 0.55,yaxis_title='%', title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(text="Índice de Não Conformidades Externas<br>Meta: Abaixo de 0,5% - Máximo de 5 Peças NC em 1000 Peças Fabricadas",font=dict(size=18)),legend = dict(orientation="h",yanchor="top",y=-0.2,xanchor="center",x=0.5))
     fig_ind_nc_ext.add_shape(
