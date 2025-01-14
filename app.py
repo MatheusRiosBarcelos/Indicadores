@@ -349,7 +349,7 @@ with tab2:
     st.plotly_chart(fig_retrabalho)
     st.plotly_chart(fig_comp)
 
-# with tab3:
+with tab3:
     # df_rh['ABSENTEISMO_TEXT'] = df_rh['ABSENTEÍSMO'].apply(lambda x: f"{x:.2f}%")
     # fig_just = px.bar(df_rh,x='MÊS',y='ABSENTEÍSMO', title='FALTAS JUSTIFICADAS/HHT',text='ABSENTEISMO_TEXT')
     # fig_just.update_traces(textfont_size=18, textangle=0, textposition="outside", cliponaxis=False)
