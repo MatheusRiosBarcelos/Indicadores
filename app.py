@@ -436,10 +436,10 @@ with tab2:
     # col7.plotly_chart(fig_treina)
     # col8.plotly_chart(fig_hora_ext)
 
-    # st.image('Faltas_justificadas.png',use_container_width =True)
-    # st.image('Faltas_injustificadas.png',use_container_width =True)
-    # st.image('Horas_extras.png',use_container_width =True)
-    # st.image('Treinamentos.png',use_container_width =True)
+    st.image('Faltas_justificadas.png',use_container_width =True)
+    st.image('Faltas_injustificadas.png',use_container_width =True)
+    st.image('Horas_extras.png',use_container_width =True)
+    st.image('Treinamentos.png',use_container_width =True)
 
 with tab4:
     df_qualidade_nc_internas = df_qualidade_nc_internas.dropna(subset='Qtde. NC Disposição')
