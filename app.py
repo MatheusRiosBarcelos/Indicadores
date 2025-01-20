@@ -286,7 +286,7 @@ with tab2:
 
     fig_manu.update_layout(title_x = 0.55, title_y = 0.95,title_xanchor = 'center',xaxis=dict(tickfont=dict(size=16)),title = dict(font=dict(size=18)))
     fig_manu.update_traces(textposition='outside', textfont = dict(size = 36))
-    # st.plotly_chart(fig_manu)
+    st.plotly_chart(fig_manu)
 
     df_refugo_total = df_refugo.drop(columns = ['Mês / Ano', 'Ideal: 1% do faturamento']).sum()
     nova_linha_2 = {'Mês / Ano': 'Total', 'Valor (R$)': df_refugo_total['Valor (R$)'], 'Ideal: 1% do faturamento': 0.0025, 'Faturamento': df_refugo_total['Faturamento'], 'Permissível (R$)':df_refugo_total['Permissível (R$)']}
